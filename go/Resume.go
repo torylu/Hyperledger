@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-
+    "encoding/json"
     "github.com/hyperledger/fabric/core/chaincode/shim"
     "github.com/hyperledger/fabric/protos/peer"
 )
@@ -13,7 +13,7 @@ type SimpleAsset struct {
 }
 
 type Info struct {
-    location string,
+    location string
     title string
 }
 
@@ -66,7 +66,7 @@ func addRecord(stub shim.ChaincodeStubInterface, args []string) {
     if len(args) != 4 {
         return shim.Error("Incorrect arguments. Expecting a function name and three value")
     }
-    
+
     var id, year, location, title string= args[0], args[1], args[2], args[3]
 
     var inner_map = make(map[string]Info)
@@ -90,7 +90,7 @@ func getRecord(stub shim.ChaincodeStubInterface, args []string) (string, error) 
             return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
     }
 
-    err := stub.PutState(args[0], []byte(args[1]))
+    response, err := stub.GetState(args[0])
     if err != nil {
             return "", fmt.Errorf("Failed to set asset: %s", args[0])
     }
